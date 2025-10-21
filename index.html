@@ -399,14 +399,14 @@
             display: block;
         }
 
-        /* Modal - Mejorado */
+        /* Modal - Simplificado */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -414,7 +414,6 @@
             opacity: 0;
             visibility: hidden;
             transition: all var(--transition);
-            backdrop-filter: blur(5px);
         }
 
         .modal.active {
@@ -423,10 +422,10 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 800px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 700px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -434,8 +433,6 @@
             transition: transform var(--transition);
             position: relative;
             z-index: 1001;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .modal.active .modal-content {
@@ -446,226 +443,99 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--secondary);
+            margin-bottom: 20px;
         }
 
         .modal-close {
-            background: linear-gradient(135deg, var(--danger), #dc2626);
+            background: none;
             border: none;
             font-size: 24px;
             cursor: pointer;
-            color: white;
-            transition: all var(--transition);
+            color: var(--text-light);
+            transition: color var(--transition);
             position: relative;
             z-index: 10;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
         .modal-close:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+            color: var(--text-dark);
         }
 
-        /* Estilos mejorados para el contenido del modal de ayuda */
+        /* Estilos simplificados para el contenido del modal de ayuda */
         .help-content h3 {
-            color: var(--primary);
-            margin-bottom: 24px;
-            font-size: 1.6em;
-            text-align: center;
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        .help-content h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            border-radius: 2px;
-        }
-
-        .help-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .help-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            transition: all var(--transition);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .help-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-        }
-
-        .help-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-            border-color: var(--secondary);
-        }
-
-        .help-card h4 {
             color: var(--primary);
             margin-bottom: 16px;
             font-size: 1.3em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .help-card .icon {
-            font-size: 1.5em;
+        .help-section {
+            margin-bottom: 24px;
         }
 
-        .help-card p {
+        .help-section h4 {
+            color: var(--secondary);
             margin-bottom: 12px;
-            font-size: 1.05em;
-            line-height: 1.7;
+            font-size: 1.1em;
         }
 
-        .highlight {
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .highlight-gender {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-        }
-
-        .highlight-number {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .highlight-masculine {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-            color: white;
-        }
-
-        .highlight-feminine {
-            background: linear-gradient(135deg, #ec4899, #db2777);
-            color: white;
-        }
-
-        .highlight-singular {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-
-        .highlight-plural {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            color: white;
+        .help-section p {
+            margin-bottom: 10px;
+            font-size: 1.1em;
         }
 
         .help-examples {
-            margin-top: 32px;
-        }
-
-        .help-examples h3 {
-            color: var(--secondary);
-            margin-bottom: 24px;
-            font-size: 1.4em;
-        }
-
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            margin-top: 30px;
         }
 
         .example {
-            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(245, 158, 66, 0.15);
-            transition: all var(--transition);
-            border: 2px solid var(--secondary);
-            position: relative;
+            background-color: rgba(255, 159, 67, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        .example::before {
-            content: '💡';
-            position: absolute;
-            top: -15px;
-            left: 20px;
-            font-size: 2em;
-            background: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .example:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(245, 158, 66, 0.25);
+        .example:last-child {
+            margin-bottom: 0;
         }
 
         .example-title {
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 16px;
-            font-size: 1.3em;
-            padding-top: 10px;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 12px;
+            font-size: 1.2em;
         }
 
         .example-step {
-            margin-bottom: 12px;
-            padding-left: 30px;
+            margin-bottom: 10px;
+            padding-left: 24px;
             position: relative;
-            font-size: 1.05em;
-            line-height: 1.6;
+            font-size: 1.1em;
         }
 
-        .example-step::before {
-            content: "✓";
+        .example-step:before {
+            content: "•";
             position: absolute;
-            left: 8px;
-            color: var(--success);
-            font-weight: bold;
-            font-size: 1.2em;
+            left: 10px;
+            color: var(--secondary);
         }
 
         .example-result {
-            font-weight: 700;
-            margin-top: 16px;
+            font-weight: 600;
+            margin-top: 12px;
             font-size: 1.2em;
-            padding: 12px;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 8px;
-            border-left: 4px solid var(--success);
+        }
+
+        .example-explanation {
+            font-style: italic;
+            color: var(--text-light);
+            margin-top: 12px;
+            font-size: 1.1em;
+        }
+
+        /* Destaque simple para palabras clave */
+        .highlight-word {
+            font-weight: 700;
+            color: var(--secondary);
         }
 
         /* Pantalla final */
@@ -821,18 +691,6 @@
                 font-size: 32px;
                 padding: 8px 16px;
             }
-
-            .modal-content {
-                padding: 20px;
-            }
-
-            .help-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .examples-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Accesibilidad */
@@ -975,44 +833,39 @@
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>📚 ¿Cómo clasificar sustantivos?</h2>
+                <h2>¿Cómo clasificar sustantivos?</h2>
                 <button class="modal-close" id="closeHelpModal" onclick="unlockAudio(); toggleHelpModal()">×</button>
             </div>
             <div class="help-content">
-                <h3>🎯 Pasos a seguir</h3>
+                <h3>Pasos a seguir:</h3>
+                <div class="help-section">
+                    <p>1. Identifica el <span class="highlight-word">género</span> del sustantivo:</p>
+                    <p>• Si puede llevar delante "el" o "los" es <span class="highlight-word">masculino</span></p>
+                    <p>• Si puede llevar delante "la" o "las" es <span class="highlight-word">femenino</span></p>
+                </div>
                 
-                <div class="help-grid">
-                    <div class="help-card">
-                        <h4><span class="icon">♂️♀️</span> Identificar el <span class="highlight highlight-gender">género</span></h4>
-                        <p>• Si puede llevar delante "<span class="highlight highlight-masculine">el</span>" o "<span class="highlight highlight-masculine">los</span>" es <span class="highlight highlight-masculine">masculino</span></p>
-                        <p>• Si puede llevar delante "<span class="highlight highlight-feminine">la</span>" o "<span class="highlight highlight-feminine">las</span>" es <span class="highlight highlight-feminine">femenino</span></p>
-                    </div>
-                    
-                    <div class="help-card">
-                        <h4><span class="icon">🔢</span> Identificar el <span class="highlight highlight-number">número</span></h4>
-                        <p>• Si se refiere a un solo elemento es <span class="highlight highlight-singular">singular</span></p>
-                        <p>• Si se refiere a más de un elemento es <span class="highlight highlight-plural">plural</span></p>
-                        <p>• Los plurales suelen terminar en <strong>-s</strong> o <strong>-es</strong></p>
-                    </div>
+                <div class="help-section">
+                    <p>2. Identifica el <span class="highlight-word">número</span> del sustantivo:</p>
+                    <p>• Si se refiere a un solo elemento es <span class="highlight-word">singular</span></p>
+                    <p>• Si se refiere a más de un elemento es <span class="highlight-word">plural</span></p>
+                    <p>• Los plurales suelen terminar en -s / -es</p>
                 </div>
                 
                 <div class="help-examples">
-                    <h3>💡 Ejemplos prácticos</h3>
+                    <h3>Ejemplos:</h3>
                     
-                    <div class="examples-grid">
-                        <div class="example">
-                            <div class="example-title">📘 "Libro"</div>
-                            <div class="example-step">Podemos decir "<span class="highlight highlight-masculine">el libro</span>" → es <span class="highlight highlight-masculine">masculino</span></div>
-                            <div class="example-step">Se refiere a un solo libro → es <span class="highlight highlight-singular">singular</span></div>
-                            <div class="example-result">✅ Resultado: <span class="highlight highlight-masculine">Masculino</span> <span class="highlight highlight-singular">singular</span></div>
-                        </div>
-                        
-                        <div class="example">
-                            <div class="example-title">📚 "Mesas"</div>
-                            <div class="example-step">Podemos decir "<span class="highlight highlight-feminine">las mesas</span>" → es <span class="highlight highlight-feminine">femenino</span></div>
-                            <div class="example-step">Termina en -s y se refiere a varias → es <span class="highlight highlight-plural">plural</span></div>
-                            <div class="example-result">✅ Resultado: <span class="highlight highlight-feminine">Femenino</span> <span class="highlight highlight-plural">plural</span></div>
-                        </div>
+                    <div class="example">
+                        <div class="example-title">1️⃣ "Libro"</div>
+                        <div class="example-step">Podemos decir "el libro" → es <span class="highlight-word">masculino</span></div>
+                        <div class="example-step">Se refiere a un solo libro → es <span class="highlight-word">singular</span></div>
+                        <div class="example-result">Resultado: Masculino singular</div>
+                    </div>
+                    
+                    <div class="example">
+                        <div class="example-title">2️⃣ "Mesas"</div>
+                        <div class="example-step">Podemos decir "las mesas" → es <span class="highlight-word">femenino</span></div>
+                        <div class="example-step">Termina en -s y se refiere a varias mesas → es <span class="highlight-word">plural</span></div>
+                        <div class="example-result">Resultado: Femenino plural</div>
                     </div>
                 </div>
             </div>
@@ -1020,47 +873,55 @@
     </div>
 
     <script>
-        // Base de datos de sustantivos - Corregida según castellano de España
+        // Base de datos de sustantivos - Actualizada con las nuevas listas
         const sustantivos = {
             'masculino-singular': [
-                'libro', 'perro', 'gato', 'árbol', 'coche', 'sol', 'cielo', 'río', 'montaña', 'pájaro',
-                'camino', 'puente', 'jardín', 'castillo', 'rey', 'hombre', 'niño', 'caballo', 'león', 'tigre',
-                'elefante', 'avión', 'tren', 'barco', 'edificio', 'hospital', 'parque', 'museo', 'bolígrafo',
-                'ordenador', 'teléfono', 'reloj', 'zapato', 'sombrero', 'pantalón', 'vestido', 'abrigo', 'guante',
-                'cuaderno', 'lápiz', 'borrador', 'armario', 'cama', 'sofá', 'espejo', 'cuadro', 'vaso', 'plato',
-                'tenedor', 'cuchillo', 'cuchara', 'zapato', 'botón', 'reloj', 'coche', 'autobús', 'camión', 'moto',
-                'bicicleta', 'tren', 'avión', 'barco', 'puerto', 'aeropuerto', 'estación', 'teatro', 'cine', 'museo',
-                'restaurante', 'café', 'hotel', 'hospital', 'mercado', 'supermercado', 'tienda', 'banco', 'oficina', 'fábrica'
+                'Libro', 'Coche', 'Sol', 'Ordenador', 'Bolígrafo', 'Móvil', 'Pan', 'Queso', 'Zapato', 'Trabajo',
+                'Tiempo', 'Reloj', 'Perro', 'Gato', 'Árbol', 'Parque', 'Restaurante', 'Actor', 'Profesor', 'Juez',
+                'Viaje', 'Garaje', 'Mes', 'Lunes', 'Aire', 'Día', 'Mapa', 'Problema', 'Idioma', 'Poema', 'Planeta',
+                'Tren', 'Autobús', 'Metro', 'Pueblo', 'Colegio', 'Edificio', 'Cine', 'Museo', 'Desayuno', 'Almuerzo',
+                'Recuerdo', 'Corazón', 'Dolor', 'Calor', 'Motor', 'Color', 'Papel', 'Hotel', 'Nivel', 'Abuelo',
+                'Primo', 'Tío', 'Vecino', 'Amigo', 'Camino', 'Destino', 'Juego', 'Fuego', 'Frío', 'Bar',
+                'Café', 'Té', 'Pie', 'Brazo', 'Cuerpo', 'Cabello', 'Dedo', 'Hospital', 'Mineral', 'Animal',
+                'Sacapuntas', 'Virus', 'Jersey', 'Cáliz', 'Lápiz', 'Arroz', 'Ajedrez', 'Puente', 'Campo', 'Sillón',
+                'Balcón', 'Jamón', 'Anillo', 'Castillo', 'Verano', 'Invierno', 'Otoño', 'Dibujo', 'Teatro', 'Suelo',
+                'Vaso', 'Espejo', 'Regalo', 'Futuro', 'Pasado', 'Presente', 'Balón', 'Cielo', 'Pimiento'
             ],
             'masculino-plural': [
-                'libros', 'perros', 'gatos', 'árboles', 'coches', 'soles', 'cielos', 'ríos', 'montañas', 'pájaros',
-                'caminos', 'puentes', 'jardines', 'castillos', 'reyes', 'hombres', 'niños', 'caballos', 'leones', 'tigres',
-                'elefantes', 'aviones', 'trenes', 'barcos', 'edificios', 'hospitales', 'parques', 'museos', 'bolígrafos',
-                'ordenadores', 'teléfonos', 'relojes', 'zapatos', 'sombreros', 'pantalones', 'vestidos', 'abrigos', 'guantes',
-                'cuadernos', 'lápices', 'borradores', 'armarios', 'camas', 'sofás', 'espejos', 'cuadros', 'vasos', 'platos',
-                'tenedores', 'cuchillos', 'cucharas', 'zapatos', 'botones', 'relojes', 'coches', 'autobuses', 'camiones', 'motos',
-                'bicicletas', 'trenes', 'aviones', 'barcos', 'puertos', 'aeropuertos', 'estaciones', 'teatros', 'cines', 'museos',
-                'restaurantes', 'cafés', 'hoteles', 'hospitales', 'mercados', 'supermercados', 'tiendas', 'bancos', 'oficinas', 'fábricas'
+                'Libros', 'Coches', 'Soles', 'Ordenadores', 'Bolígrafos', 'Móviles', 'Panes', 'Quesos', 'Zapatos', 'Trabajos',
+                'Tiempos', 'Relojes', 'Perros', 'Gatos', 'Árboles', 'Parques', 'Restaurantes', 'Actores', 'Profesores', 'Jueces',
+                'Viajes', 'Garajes', 'Meses', 'Lunes', 'Aires', 'Días', 'Mapas', 'Problemas', 'Idiomas', 'Poemas', 'Planetas',
+                'Trenes', 'Autobuses', 'Metros', 'Pueblos', 'Colegios', 'Edificios', 'Cines', 'Museos', 'Desayunos', 'Almuerzos',
+                'Recuerdos', 'Corazones', 'Dolores', 'Calores', 'Motores', 'Colores', 'Papeles', 'Hoteles', 'Niveles', 'Abuelos',
+                'Primos', 'Tíos', 'Vecinos', 'Amigos', 'Caminos', 'Destinos', 'Juegos', 'Fuegos', 'Fríos', 'Bares',
+                'Cafés', 'Tablones', 'Pies', 'Brazos', 'Cuerpos', 'Cabellos', 'Dedos', 'Hospitales', 'Minerales', 'Animales',
+                'Sacapuntas', 'Virus', 'Jerséis', 'Estuches', 'Lápices', 'Arroces', 'Ajedreces', 'Puentes', 'Campos', 'Sillones',
+                'Balcones', 'Jamones', 'Anillos', 'Castillos', 'Veranos', 'Inviernos', 'Otoños', 'Dibujos', 'Teatros', 'Suelos',
+                'Vasos', 'Espejos', 'Regalos', 'Futuros', 'Pasados', 'Presentes', 'Balones', 'Cielos', 'Pimientos'
             ],
             'femenino-singular': [
-                'casa', 'mesa', 'silla', 'puerta', 'ventana', 'flor', 'estrella', 'luna', 'playa', 'ciudad',
-                'iglesia', 'tienda', 'calle', 'plaza', 'fuente', 'isla', 'península', 'mariposa', 'abeja', 'gallina',
-                'vaca', 'oveja', 'jirafa', 'ballena', 'tortuga', 'serpiente', 'lagartija', 'manzana', 'naranja', 'banana',
-                'fresa', 'uva', 'sandía', 'melocotón', 'pera', 'limón', 'ciruela', 'cereza', 'rosa', 'tulipán',
-                'margarita', 'girasol', 'orquídea', 'dalia', 'clavel', 'lirio', 'azucena', 'violeta', 'camisa', 'falda',
-                'blusa', 'chaqueta', 'bufanda', 'gorra', 'bolso', 'cartera', 'moneda', 'llave', 'carta', 'foto',
-                'película', 'canción', 'música', 'historia', 'novela', 'poesía', 'obra', 'pintura', 'escultura', 'danza',
-                'escuela', 'universidad', 'clase', 'lección', 'tarea', 'prueba', 'nota', 'matrícula', 'beca', 'diploma'
+                'Casa', 'Mesa', 'Silla', 'Ventana', 'Puerta', 'Flor', 'Calle', 'Ciudad', 'Noche', 'Tarde',
+                'Mano', 'Foto', 'Moto', 'Radio', 'Televisión', 'Canción', 'Emoción', 'Razón', 'Verdad', 'Libertad',
+                'Amistad', 'Actitud', 'Juventud', 'Salud', 'Pared', 'Luz', 'Voz', 'Paz', 'Nariz', 'Clase',
+                'Gente', 'Leche', 'Carne', 'Tostada', 'Cena', 'Comida', 'Bebida', 'Familia', 'Hermana', 'Madre',
+                'Abuela', 'Prima', 'Amiga', 'Vecina', 'Doctora', 'Actriz', 'Poetisa', 'Pintora', 'Profesora', 'Secretaria',
+                'Oficina', 'Tienda', 'Ropa', 'Falda', 'Camisa', 'Chaqueta', 'Playa', 'Montaña', 'Tierra', 'Estrella',
+                'Luna', 'Nube', 'Lluvia', 'Niebla', 'Cerveza', 'Copa', 'Taza', 'Botella', 'Cuchara', 'Servilleta',
+                'Historia', 'Memoria', 'Alegría', 'Tristeza', 'Esperanza', 'Máquina', 'Gasolina', 'Carretera', 'Acera', 'Bicicleta',
+                'Barca', 'Carta', 'Respuesta', 'Pregunta', 'Idea', 'Zona', 'Pluma', 'Arena', 'Piedra', 'Regla',
+                'Prueba', 'Tribu', 'Virtud', 'Multitud', 'Imagen', 'Llave', 'Crisis', 'Tesis', 'Fiebre'
             ],
             'femenino-plural': [
-                'casas', 'mesas', 'sillas', 'puertas', 'ventanas', 'flores', 'estrellas', 'lunas', 'playas', 'ciudades',
-                'iglesias', 'tiendas', 'calles', 'plazas', 'fuentes', 'islas', 'penínsulas', 'mariposas', 'abejas', 'gallinas',
-                'vacas', 'ovejas', 'jirafas', 'ballenas', 'tortugas', 'serpientes', 'lagartijas', 'manzanas', 'naranjas', 'bananas',
-                'fresas', 'uvas', 'sandías', 'melocotones', 'peras', 'limones', 'ciruelas', 'cerezas', 'rosas', 'tulipanes',
-                'margaritas', 'girasoles', 'orquídeas', 'dalias', 'claveles', 'lirios', 'azucenas', 'violetas', 'camisas', 'faldas',
-                'blusas', 'chaquetas', 'bufandas', 'gorras', 'bolsos', 'carteras', 'monedas', 'llaves', 'cartas', 'fotos',
-                'películas', 'canciones', 'músicas', 'historias', 'novelas', 'poesías', 'obras', 'pinturas', 'esculturas', 'danzas',
-                'escuelas', 'universidades', 'clases', 'lecciones', 'tareas', 'pruebas', 'notas', 'matrículas', 'becas', 'diplomas'
+                'Casas', 'Mesas', 'Sillas', 'Ventanas', 'Puertas', 'Flores', 'Calles', 'Ciudades', 'Noches', 'Tardes',
+                'Manos', 'Fotos', 'Motos', 'Radios', 'Alfombras', 'Canciones', 'Emociones', 'Razones', 'Verdades', 'Libertades',
+                'Amistades', 'Actitudes', 'Arrugas', 'Paredes', 'Luces', 'Voces', 'Paces', 'Veces', 'Narices', 'Clases',
+                'Fuentes', 'Leches', 'Carnes', 'Tostadas', 'Cenas', 'Comidas', 'Bebidas', 'Familias', 'Hermanas', 'Madres',
+                'Abuelas', 'Primas', 'Amigas', 'Vecinas', 'Doctoras', 'Actrices', 'Poetisas', 'Pintoras', 'Profesoras', 'Secretarias',
+                'Oficinas', 'Tiendas', 'Ropas', 'Familias', 'Camisas', 'Chaquetas', 'Playas', 'Montañas', 'Tierras', 'Estrellas',
+                'Lunas', 'Nubes', 'Lluvias', 'Nieblas', 'Cervezas', 'Copas', 'Tazas', 'Botellas', 'Cucharas', 'Servilletas',
+                'Historias', 'Memorias', 'Alegrías', 'Tristezas', 'Esperanzas', 'Máquinas', 'Gasolinas', 'Carreteras', 'Aceras', 'Bicicletas',
+                'Barcas', 'Cartas', 'Respuestas', 'Preguntas', 'Ideas', 'Zonas', 'Plumas', 'Arenas', 'Piedras', 'Reglas',
+                'Pruebas', 'Tribus', 'Virtudes', 'Multitudes', 'Imágenes', 'Llaves', 'Crisis', 'Almohadas', 'Fiebres', 'Olas'
             ]
         };
 
