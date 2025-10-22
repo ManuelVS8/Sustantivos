@@ -883,7 +883,7 @@
     </div>
 
     <script>
-        // Base de datos de sustantivos - Actualizada con las correcciones
+        // Base de datos de sustantivos
         const sustantivos = {
             'masculino-singular': [
                 'Libro', 'Coche', 'Sol', 'Ordenador', 'Bolígrafo', 'Móvil', 'Pan', 'Queso', 'Zapato', 'Trabajo',
@@ -894,7 +894,7 @@
                 'Primo', 'Refresco', 'Vecino', 'Amigo', 'Camino', 'Destino', 'Juego', 'Fuego', 'Frío', 'Bar',
                 'Café', 'Teléfono', 'Pie', 'Brazo', 'Cuerpo', 'Cabello', 'Dedo', 'Hospital', 'Mineral', 'Animal',
                 'Volcán', 'Virus', 'Tejado', 'Tiburón', 'Lápiz', 'Arroz', 'Ajedrez', 'Puente', 'Campo', 'Sillón',
-                'Balcón', 'Jamón', 'Anillo', 'Castillo', 'Verano', 'Invierno', 'Otoño', 'Dibujo', 'Teatro', 'Suelo',
+                'Balcón', 'Jabalí', 'Anillo', 'Castillo', 'Verano', 'Invierno', 'Otoño', 'Dibujo', 'Teatro', 'Suelo',
                 'Vaso', 'Espejo', 'Regalo', 'Futuro', 'Pozo', 'Periódico', 'Balón', 'Cielo', 'Pimiento'
             ],
             'masculino-plural': [
@@ -988,12 +988,12 @@
             trophyContainer: document.getElementById('trophyContainer')
         };
 
-        // Sistema de sonido con archivos externos - Actualizado con los nuevos enlaces
+        // Sistema de sonido con archivos externos - URLs CORREGIDAS A RAW
         const soundFiles = {
             correct: 'https://github.com/ManuelVS8/Efectos_audio/blob/7b86808e254100aeaba6285b3e0b82650ae78055/Correcto.mp3?raw=true',
             error: 'https://github.com/ManuelVS8/Efectos_audio/blob/7b86808e254100aeaba6285b3e0b82650ae78055/Error.mp3?raw=true',
-            completed: 'https://github.com/ManuelVS8/Efectos_audio/blob/0b28bf817be00a46c460204ed9127cfd919eea3c/Final.mp3?raw=true',
-            victory: 'https://github.com/ManuelVS8/Efectos_audio/blob/7b86808e254100aeaba6285b3e0b82650ae78055/Termin%C3%A9.mp3?raw=true',
+            completed: 'https://github.com/ManuelVS8/Efectos_audio/blob/0b28bf817be00a46c460204ed9127cfd919eea3c/Final.mp3?raw=true', // Final.mp3
+            victory: 'https://github.com/ManuelVS8/Efectos_audio/blob/7b86808e254100aeaba6285b3e0b82650ae78055/Termin%C3%A9.mp3?raw=true', // Victoria/Terminé.mp3
             tap: 'https://github.com/ManuelVS8/Efectos_audio/blob/37b3eb2da9c15c04dfb71dfe1be60f088ea3cdfc/Tap.mp3?raw=true'
         };
         
@@ -1006,45 +1006,39 @@
             sounds[key].load();
         });
 
-        // Función de desbloqueo de audio
+        // Función de desbloqueo de audio (SOLUCIÓN ROBUSTA para evitar el bloqueo del navegador)
         function unlockAudio() {
             if (audioUnlocked) return;
             
             try {
+                // 1. Intentar reanudar AudioContext (si está suspendido)
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                
                 if (ctx.state === 'suspended') {
                     ctx.resume();
                 }
 
-                const buffer = ctx.createBuffer(1, 1, 22050);
-                const source = ctx.createBufferSource();
-                source.buffer = buffer;
-                source.connect(ctx.destination);
-                
-                source.start(0);
-                
-                source.onended = () => {
-                    audioUnlocked = true;
-                    console.log("AudioContext desbloqueado.");
-                    Object.keys(sounds).forEach(key => {
-                        sounds[key].load();
+                // 2. Intentar desbloquear todos los elementos <audio> con un play silencioso
+                Object.keys(sounds).forEach(key => {
+                    sounds[key].volume = 0; // Silenciar el intento
+                    sounds[key].play().then(() => {
+                        sounds[key].pause();
+                        sounds[key].volume = 1; // Restaurar volumen
+                        sounds[key].currentTime = 0;
+                    }).catch(e => {
+                        console.warn(`No se pudo desbloquear el sonido ${key} con play()`, e);
                     });
-                };
+                });
+
             } catch (e) {
-                console.warn("Error al intentar desbloquear AudioContext, usando fallback de Audio()");
-                audioUnlocked = true;
+                console.warn("Error al intentar desbloquear AudioContext o Audio.play()", e);
             } finally {
-                if (!audioUnlocked) {
-                    audioUnlocked = true;
-                    Object.keys(sounds).forEach(key => {
-                        sounds[key].load();
-                    });
-                }
+                audioUnlocked = true;
+                console.log("Audio desbloqueado por la interacción del usuario.");
             }
         }
 
         // Funciones para reproducir sonidos
+        // Se usa .currentTime = 0 para permitir clics rápidos
         function reproducirSonidoCorrecto() {
             if (audioUnlocked && sounds.correct && gameState.soundEnabled) {
                 sounds.correct.currentTime = 0;
@@ -1080,21 +1074,17 @@
             }
         }
 
-        // Función para generar palabras para el juego - Mejorada para evitar repeticiones
+        // Función para generar palabras para el juego
         function generateWords() {
             const words = [];
             const usedWordsInThisGame = new Set();
             
-            // Función auxiliar para obtener una palabra aleatoria sin repetir
             function getRandomWordFromType(type) {
                 const availableWords = sustantivos[type].filter(word => 
                     !gameState.wordsUsed.includes(word) && !usedWordsInThisGame.has(word)
                 );
                 
                 if (availableWords.length === 0) {
-                    // Si no hay palabras disponibles, reiniciar el array de palabras usadas globalmente
-                    console.warn(`No hay palabras disponibles de tipo ${type}, reiniciando palabras usadas globalmente`);
-                    // Reiniciar solo las palabras de este tipo
                     const allWordsOfType = sustantivos[type];
                     const randomIndex = Math.floor(Math.random() * allWordsOfType.length);
                     return allWordsOfType[randomIndex];
@@ -1106,37 +1096,20 @@
                 return word;
             }
             
-            // Añadir 2 de cada tipo
+            // Generar 10 palabras
             for (let i = 0; i < 2; i++) {
-                words.push({
-                    word: getRandomWordFromType('masculino-singular'),
-                    type: 'masculino-singular'
-                });
-                words.push({
-                    word: getRandomWordFromType('masculino-plural'),
-                    type: 'masculino-plural'
-                });
-                words.push({
-                    word: getRandomWordFromType('femenino-singular'),
-                    type: 'femenino-singular'
-                });
-                words.push({
-                    word: getRandomWordFromType('femenino-plural'),
-                    type: 'femenino-plural'
-                });
+                words.push({ word: getRandomWordFromType('masculino-singular'), type: 'masculino-singular' });
+                words.push({ word: getRandomWordFromType('masculino-plural'), type: 'masculino-plural' });
+                words.push({ word: getRandomWordFromType('femenino-singular'), type: 'femenino-singular' });
+                words.push({ word: getRandomWordFromType('femenino-plural'), type: 'femenino-plural' });
             }
             
-            // Añadir 2 aleatorios
             const types = ['masculino-singular', 'masculino-plural', 'femenino-singular', 'femenino-plural'];
             for (let i = 0; i < 2; i++) {
                 const randomType = types[Math.floor(Math.random() * types.length)];
-                words.push({
-                    word: getRandomWordFromType(randomType),
-                    type: randomType
-                });
+                words.push({ word: getRandomWordFromType(randomType), type: randomType });
             }
             
-            // Mezclar el orden de las palabras
             return shuffleArray(words);
         }
 
@@ -1161,20 +1134,16 @@
             
             elements.wordDisplay.textContent = gameState.currentWord;
             
-            // Actualizar progreso (solo en modo normal)
             if (gameState.gameMode === 'normal') {
                 elements.progressText.textContent = `${gameState.currentWordIndex + 1}/${gameState.words.length}`;
                 elements.progressFill.style.width = `${((gameState.currentWordIndex + 1) / gameState.words.length) * 100}%`;
             }
             
-            // Resetear botones
             resetButtons();
             
-            // Mostrar pregunta de género
             elements.genderQuestion.style.display = 'block';
             elements.numberQuestion.style.display = 'none';
             
-            // Ocultar feedback y botón continuar
             elements.feedback.classList.remove('show');
             elements.continueBtn.style.display = 'none';
         }
@@ -1200,11 +1169,9 @@
             const correctGender = gameState.currentGender;
             const isCorrect = selectedGender === correctGender;
             
-            // Deshabilitar botones de género
             elements.masculineBtn.disabled = true;
             elements.feminineBtn.disabled = true;
             
-            // Resaltar botón correcto e incorrecto
             if (selectedGender === 'masculine') {
                 elements.masculineBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
             } else {
@@ -1219,22 +1186,20 @@
                     elements.feminineBtn.classList.add('correct');
                 }
                 
-                // Mostrar feedback de error
                 elements.feedback.className = 'feedback error show';
                 elements.feedback.innerHTML = `<p><strong>No es correcto.</strong> El género correcto es ${correctGender === 'masculine' ? 'masculino' : 'femenino'}.</p>`;
                 
-                // Reproducir sonido de error
+                // ❌ Respuesta incorrecta: Reproduce sonido de error
                 reproducirSonidoError();
                 
-                // Mostrar botón continuar
                 elements.continueBtn.style.display = 'inline-block';
             } else {
-                // Reproducir sonido de éxito
+                // ✅ Respuesta es correcta: Reproduce sonido de correcto
                 reproducirSonidoCorrecto();
                 
-                // Mostrar pregunta de número inmediatamente (sin tiempo de espera)
                 elements.genderQuestion.style.display = 'none';
                 elements.numberQuestion.style.display = 'block';
+                gameState.questionStep = 'number';
                 gameState.isProcessing = false;
             }
         }
@@ -1247,11 +1212,9 @@
             const correctNumber = gameState.currentNumber;
             const isCorrect = selectedNumber === correctNumber;
             
-            // Deshabilitar botones de número
             elements.singularBtn.disabled = true;
             elements.pluralBtn.disabled = true;
             
-            // Resaltar botón correcto e incorrecto
             if (selectedNumber === 'singular') {
                 elements.singularBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
             } else {
@@ -1266,35 +1229,32 @@
                     elements.pluralBtn.classList.add('correct');
                 }
                 
-                // Mostrar feedback de error
                 elements.feedback.className = 'feedback error show';
                 elements.feedback.innerHTML = `<p><strong>No es correcto.</strong> El número correcto es ${correctNumber === 'singular' ? 'singular' : 'plural'}.</p>`;
                 
-                // Reproducir sonido de error
+                // ❌ Respuesta es incorrecta: Reproduce sonido de error
                 reproducirSonidoError();
                 
-                // Mostrar botón continuar
                 elements.continueBtn.style.display = 'inline-block';
             } else {
-                // Reproducir sonido de éxito
+                // ✅ Respuesta es correcta: Reproduce sonido de correcto
                 reproducirSonidoCorrecto();
                 
-                // Actualizar puntuación
                 gameState.score += 1;
                 
-                // Si estamos en modo infinito, aumentar puntuación
                 if (gameState.gameMode === 'infinite') {
                     gameState.infiniteScore += 10;
                     elements.infiniteScore.textContent = `Puntuación: ${gameState.infiniteScore}`;
                 }
                 
-                // Pasar automáticamente a la siguiente palabra sin tiempo de espera
+                // Pasar automáticamente a la siguiente palabra
                 nextWord();
             }
         }
 
         // Función para continuar a la siguiente palabra
         function nextWord() {
+            // Tap: Debe sonar al pulsar "Continuar"
             reproducirSonidoTap();
             
             if (gameState.gameMode === 'normal') {
@@ -1316,13 +1276,10 @@
             const types = ['masculino-singular', 'masculino-plural', 'femenino-singular', 'femenino-plural'];
             const randomType = types[Math.floor(Math.random() * types.length)];
             
-            // Obtener palabra sin repetir
             const availableWords = sustantivos[randomType].filter(word => !gameState.wordsUsed.includes(word));
             let selectedWord;
             
             if (availableWords.length === 0) {
-                // Si no hay palabras disponibles, reiniciar el array de palabras usadas
-                console.warn("Reiniciando palabras usadas en modo infinito");
                 gameState.wordsUsed = [];
                 selectedWord = sustantivos[randomType][Math.floor(Math.random() * sustantivos[randomType].length)];
             } else {
@@ -1332,11 +1289,7 @@
             
             gameState.wordsUsed.push(selectedWord);
             
-            const newWord = {
-                word: selectedWord,
-                type: randomType
-            };
-            
+            const newWord = { word: selectedWord, type: randomType };
             gameState.words = [newWord];
             gameState.currentWordIndex = 0;
             
@@ -1345,9 +1298,9 @@
 
         // Función para iniciar el juego
         function startGame() {
+            // Tap: Debe sonar al pulsar "Comenzar"
             reproducirSonidoTap();
             
-            // Reiniciar estado del juego
             gameState.words = generateWords();
             gameState.currentWordIndex = 0;
             gameState.score = 0;
@@ -1357,33 +1310,29 @@
             gameState.wordsUsed = [];
             gameState.isProcessing = false;
             
-            // Iniciar temporizador
             if (gameState.timerInterval) {
                 clearInterval(gameState.timerInterval);
             }
             
             gameState.timerInterval = setInterval(updateTimer, 1000);
             
-            // Cambiar a pantalla de juego
             elements.startScreen.classList.remove('active');
             elements.gameScreen.classList.add('active');
             
-            // Mostrar elementos de modo normal
             elements.normalProgress.style.display = 'block';
             elements.normalProgressBar.style.display = 'block';
             elements.infiniteScore.style.display = 'none';
             elements.exitInfiniteBtn.style.display = 'none';
             
-            // Mostrar primera palabra
             showWord();
         }
 
         // Función para iniciar el modo infinito
         function startInfiniteMode() {
+            // Tap: Debe sonar al pulsar "Entrenamiento infinito"
             reproducirSonidoTap();
             
-            // Reiniciar estado del juego
-            gameState.words = [null]; // Placeholder para la primera palabra
+            gameState.words = [null];
             gameState.currentWordIndex = 0;
             gameState.score = 0;
             gameState.startTime = Date.now();
@@ -1392,36 +1341,31 @@
             gameState.wordsUsed = [];
             gameState.isProcessing = false;
             
-            // Iniciar temporizador
             if (gameState.timerInterval) {
                 clearInterval(gameState.timerInterval);
             }
             
             gameState.timerInterval = setInterval(updateTimer, 1000);
             
-            // Cambiar a pantalla de juego
             elements.finalScreen.classList.remove('active');
             elements.gameScreen.classList.add('active');
             
-            // Mostrar elementos de modo infinito
             elements.normalProgress.style.display = 'none';
             elements.normalProgressBar.style.display = 'none';
             elements.infiniteScore.style.display = 'block';
             elements.exitInfiniteBtn.style.display = 'inline-block';
             elements.infiniteScore.textContent = `Puntuación: 0`;
             
-            // Generar primera palabra
             generateNewInfiniteWord();
         }
 
         // Función para salir del modo infinito
         function exitInfiniteMode() {
+            // Tap: Debe sonar al pulsar "Salir"
             reproducirSonidoTap();
             
-            // Detener temporizador
             clearInterval(gameState.timerInterval);
             
-            // Cambiar a pantalla de inicio
             elements.gameScreen.classList.remove('active');
             elements.startScreen.classList.add('active');
         }
@@ -1439,40 +1383,35 @@
 
         // Función para finalizar el juego
         function endGame() {
-            // Detener temporizador
             clearInterval(gameState.timerInterval);
             
-            // Calcular puntuación
             const score = (gameState.score * 100) / 10;
             
-            // Calcular tiempo
             const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
             const minutes = Math.floor(elapsed / 60);
             const seconds = elapsed % 60;
             const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            // Cambiar a pantalla final
             elements.gameScreen.classList.remove('active');
             elements.finalScreen.classList.add('active');
             
-            // Mostrar resultados
             elements.finalScore.textContent = score;
             elements.finalTime.textContent = `Tiempo: ${timeStr}`;
             
-            // Mensaje motivador
+            // Lógica de sonidos finales
             if (score === 100) {
+                // 🏆 Victoria: Reproduce sonido de victoria solo si la puntuación final es 100
                 elements.finalMessage.textContent = '¡Genial! ¡Puntuación perfecta!';
                 elements.trophyContainer.classList.add('show');
                 elements.finalScore.classList.add('perfect');
                 
-                // Celebración con confeti
                 createConfetti();
                 
-                // Reproducir melodía de victoria después de un pequeño retraso
                 setTimeout(() => {
                     reproducirSonidoVictoria();
                 }, 500);
             } else {
+                // 🎉 Nivel completado: Reproduce sonido de completado si la puntuación es < 100
                 elements.trophyContainer.classList.remove('show');
                 elements.finalScore.classList.remove('perfect');
                 
@@ -1484,7 +1423,6 @@
                     elements.finalMessage.textContent = 'Vaya desastre... ¿Seguro que has estudiado?';
                 }
                 
-                // Reproducir sonido de completado después de un pequeño retraso
                 setTimeout(() => {
                     reproducirSonidoCompletado();
                 }, 500);
@@ -1529,6 +1467,7 @@
 
         // Función para reiniciar el juego
         function restartGame() {
+            // Tap: Debe sonar al pulsar "Volver a jugar"
             reproducirSonidoTap();
             
             elements.finalScreen.classList.remove('active');
@@ -1539,17 +1478,14 @@
         function toggleSound() {
             gameState.soundEnabled = !gameState.soundEnabled;
             
+            // Tap: Debe sonar al pulsar el botón de sonido
+            if (audioUnlocked) {
+                 reproducirSonidoTap();
+            }
+
             const soundIcon = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            `;
-            
-            const muteIcon = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                    <line x1="23" y1="9" x2="17" y2="15"></line>
-                    <line x1="17" y1="9" x2="23" y2="15"></line>
-                </svg>
             `;
             
             if (gameState.soundEnabled) {
@@ -1563,12 +1499,11 @@
                     elements.soundBtnFinal.innerHTML = soundIcon + '<line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
                 }
             }
-            
-            reproducirSonidoTap();
         }
 
         // Función para mostrar/ocultar modal de ayuda
         function toggleHelpModal() {
+            // Tap: Debe sonar al pulsar el botón de ayuda y al cerrar el modal
             reproducirSonidoTap();
             elements.helpModal.classList.toggle('active');
         }
@@ -1581,26 +1516,31 @@
                 unlockAudio();
             }
 
+            // Mapeo de teclas para Género (1/M = Masculino, 2/F = Femenino)
             if (gameState.questionStep === 'gender') {
-                if (e.key === '1' || e.key === 'm' || e.key === 'M') {
+                if (e.key === '1' || e.key.toLowerCase() === 'm') {
                     checkGender('masculine');
-                } else if (e.key === '2' || e.key === 'f' || e.key === 'F') {
+                } else if (e.key === '2' || e.key.toLowerCase() === 'f') {
                     checkGender('feminine');
                 }
-            } else if (gameState.questionStep === 'number') {
-                if (e.key === '1' || e.key === 's' || e.key === 'S') {
+            } 
+            // Mapeo de teclas para Número (1/S = Singular, 2/P = Plural)
+            else if (gameState.questionStep === 'number') {
+                if (e.key === '1' || e.key.toLowerCase() === 's') {
                     checkNumber('singular');
-                } else if (e.key === '2' || e.key === 'p' || e.key === 'P') {
+                } else if (e.key === '2' || e.key.toLowerCase() === 'p') {
                     checkNumber('plural');
                 }
             }
             
+            // Tecla Enter para Continuar
             if (e.key === 'Enter') {
                 if (elements.continueBtn.style.display !== 'none') {
                     nextWord();
                 }
             }
             
+            // Tecla Escape para Cerrar Ayuda
             if (e.key === 'Escape' && elements.helpModal.classList.contains('active')) {
                 toggleHelpModal();
             }
@@ -1613,12 +1553,8 @@
             }
         });
 
-        // Inicializar sonidos
-        Object.keys(sounds).forEach(key => {
-            sounds[key].load();
-        });
-
         // Inicializar estado de sonido
+        // Llamar dos veces para inicializar el estado (on/off)
         toggleSound();
         toggleSound();
     </script>
