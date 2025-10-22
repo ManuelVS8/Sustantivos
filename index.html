@@ -24,6 +24,8 @@
             --transition: 180ms ease;
             --final-score-color: #0055e0;
             --container-max-width: 1200px;
+            /* Color para todos los botones de opción */
+            --option-color: #BFDBFE; /* Azul claro */
         }
 
         /* Estilos base */
@@ -328,8 +330,9 @@
 
         .option-btn {
             padding: 15px 30px;
-            background-color: var(--card-bg);
-            border: 2px solid #e0e0e0;
+            background-color: var(--option-color);
+            color: #1e40af;
+            border: 2px solid #93c5fd;
             border-radius: 12px;
             font-size: 1.2em;
             font-weight: 600;
@@ -341,22 +344,31 @@
         }
 
         .option-btn:hover {
-            background-color: var(--primary);
+            background-color: #93c5fd;
             color: white;
-            border-color: var(--primary);
+            border-color: #60a5fa;
             transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
 
         .option-btn.correct {
             background-color: var(--success);
             color: white;
             border-color: var(--success);
+            transform: scale(1.05);
         }
 
         .option-btn.incorrect {
             background-color: var(--danger);
             color: white;
             border-color: var(--danger);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         .option-btn:disabled {
@@ -365,10 +377,8 @@
         }
 
         .option-btn:disabled:hover {
-            background-color: var(--card-bg);
-            color: var(--text-dark);
-            border-color: #e0e0e0;
             transform: none;
+            box-shadow: none;
         }
 
         /* Feedback */
@@ -873,7 +883,7 @@
     </div>
 
     <script>
-        // Base de datos de sustantivos - Actualizada con las nuevas listas
+        // Base de datos de sustantivos - Actualizada con las correcciones
         const sustantivos = {
             'masculino-singular': [
                 'Libro', 'Coche', 'Sol', 'Ordenador', 'Bolígrafo', 'Móvil', 'Pan', 'Queso', 'Zapato', 'Trabajo',
@@ -902,26 +912,26 @@
             'femenino-singular': [
                 'Casa', 'Mesa', 'Silla', 'Ventana', 'Puerta', 'Flor', 'Calle', 'Ciudad', 'Noche', 'Tarde',
                 'Mano', 'Foto', 'Moto', 'Radio', 'Televisión', 'Canción', 'Emoción', 'Razón', 'Verdad', 'Libertad',
-                'Amistad', 'Actitud', 'Juventud', 'Salud', 'Pared', 'Luz', 'Voz', 'Paz', 'Nariz', 'Clase',
+                'Amistad', 'Actitud', 'Juventud', 'Salud', 'Pared', 'Oreja', 'Voz', 'Paz', 'Nariz', 'Clase',
                 'Gente', 'Leche', 'Carne', 'Tostada', 'Cena', 'Comida', 'Bebida', 'Familia', 'Hermana', 'Madre',
                 'Abuela', 'Prima', 'Amiga', 'Vecina', 'Doctora', 'Actriz', 'Poetisa', 'Pintora', 'Profesora', 'Secretaria',
                 'Oficina', 'Tienda', 'Ropa', 'Falda', 'Camisa', 'Chaqueta', 'Playa', 'Montaña', 'Tierra', 'Estrella',
                 'Luna', 'Nube', 'Lluvia', 'Niebla', 'Cerveza', 'Copa', 'Taza', 'Botella', 'Cuchara', 'Servilleta',
                 'Historia', 'Memoria', 'Alegría', 'Tristeza', 'Esperanza', 'Máquina', 'Gasolina', 'Carretera', 'Acera', 'Bicicleta',
                 'Barca', 'Carta', 'Respuesta', 'Pregunta', 'Idea', 'Zona', 'Pluma', 'Arena', 'Piedra', 'Regla',
-                'Prueba', 'Tribu', 'Virtud', 'Multitud', 'Imagen', 'Llave', 'Crisis', 'Tesis', 'Fiebre'
+                'Prueba', 'Tribu', 'Virtud', 'Multitud', 'Imagen', 'Llave', 'Cáscara', 'Fiebre'
             ],
             'femenino-plural': [
                 'Casas', 'Mesas', 'Sillas', 'Ventanas', 'Puertas', 'Flores', 'Calles', 'Ciudades', 'Noches', 'Tardes',
                 'Manos', 'Fotos', 'Motos', 'Radios', 'Alfombras', 'Canciones', 'Emociones', 'Razones', 'Verdades', 'Libertades',
-                'Amistades', 'Actitudes', 'Arrugas', 'Paredes', 'Luces', 'Voces', 'Paces', 'Veces', 'Narices', 'Clases',
-                'Fuentes', 'Leches', 'Carnes', 'Tostadas', 'Cenas', 'Comidas', 'Bebidas', 'Familias', 'Hermanas', 'Madres',
+                'Amistades', 'Actitudes', 'Arrugas', 'Paredes', 'Sábanas', 'Medidas', 'Antenas', 'Amapolas', 'Ballenas', 'Jirafas',
+                'Fuentes', 'Leches', 'Carnes', 'Tostadas', 'Cenas', 'Comidas', 'Bebidas', 'Carreteras', 'Hermanas', 'Madres',
                 'Abuelas', 'Primas', 'Amigas', 'Vecinas', 'Doctoras', 'Actrices', 'Poetisas', 'Pintoras', 'Profesoras', 'Secretarias',
                 'Oficinas', 'Tiendas', 'Ropas', 'Familias', 'Camisas', 'Chaquetas', 'Playas', 'Montañas', 'Tierras', 'Estrellas',
                 'Lunas', 'Nubes', 'Lluvias', 'Nieblas', 'Cervezas', 'Copas', 'Tazas', 'Botellas', 'Cucharas', 'Servilletas',
-                'Historias', 'Memorias', 'Alegrías', 'Tristezas', 'Esperanzas', 'Máquinas', 'Gasolinas', 'Carreteras', 'Aceras', 'Bicicletas',
+                'Historias', 'Memorias', 'Alegrías', 'Tristezas', 'Esperanzas', 'Máquinas', 'Gasolinas', 'Aceras', 'Bicicletas',
                 'Barcas', 'Cartas', 'Respuestas', 'Preguntas', 'Ideas', 'Zonas', 'Plumas', 'Arenas', 'Piedras', 'Reglas',
-                'Pruebas', 'Tribus', 'Virtudes', 'Multitudes', 'Imágenes', 'Llaves', 'Crisis', 'Almohadas', 'Fiebres', 'Olas'
+                'Pruebas', 'Tribus', 'Virtudes', 'Multitudes', 'Imágenes', 'Llaves', 'Almohadas', 'Fiebres', 'Olas'
             ]
         };
 
